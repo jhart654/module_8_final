@@ -1,13 +1,10 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.express as px
 
-# Load the data using pandas
+
 data = pd.read_csv(
     "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/d51iMGfp_t0QpO30Lym-dw/automobile-sales.csv"
 )
@@ -69,13 +66,11 @@ def update_input_container(selected_statistics):
 )
 def update_output_container(report_type, selected_year):
 
-    # --------------------------
-    # TASK 2.5: Recession report
-    # --------------------------
+  
     if report_type == 'Recession Period Statistics':
         recession_data = data[data['Recession'] == 1]
 
-        # Plot 1
+        
         yearly_rec = recession_data.groupby('Year')['Automobile_Sales'].mean().reset_index()
         R_chart1 = dcc.Graph(
             figure=px.line(
@@ -84,7 +79,7 @@ def update_output_container(report_type, selected_year):
             )
         )
 
-        # Plot 2
+        
         average_sales = recession_data.groupby('Vehicle_Type')['Automobile_Sales'].mean().reset_index()
         R_chart2 = dcc.Graph(
             figure=px.bar(
@@ -93,7 +88,7 @@ def update_output_container(report_type, selected_year):
             )
         )
 
-        # Plot 3
+        
         exp_rec = recession_data.groupby('Vehicle_Type')['Advertising_Expenditure'].sum().reset_index()
         R_chart3 = dcc.Graph(
             figure=px.pie(
@@ -105,7 +100,7 @@ def update_output_container(report_type, selected_year):
             )
         )
 
-        # Plot 4
+        
         unemp_data = recession_data.groupby(
             ['unemployment_rate', 'Vehicle_Type']
         )['Automobile_Sales'].mean().reset_index()
@@ -137,28 +132,26 @@ def update_output_container(report_type, selected_year):
             )
         ]
 
-    # --------------------------
-    # TASK 2.6: Yearly report
-    # --------------------------
+    
     if report_type == 'Yearly Statistics':
         if selected_year is None:
             return html.Div("Please select a year.")
 
         yearly_data = data[data['Year'] == selected_year]
 
-        # Plot 1
+        
         yas = data.groupby('Year')['Automobile_Sales'].mean().reset_index()
         Y_chart1 = dcc.Graph(
             figure=px.line(yas, x='Year', y='Automobile_Sales', title='Yearly Automobile Sales')
         )
 
-        # Plot 2
+        
         mas = data.groupby('Month')['Automobile_Sales'].sum().reset_index()
         Y_chart2 = dcc.Graph(
             figure=px.line(mas, x='Month', y='Automobile_Sales', title='Total Monthly Automobile Sales')
         )
 
-        # Plot 3 (matches hint Year + Automobile_Sales)
+        
         avr_vdata = yearly_data.groupby('Year')['Automobile_Sales'].mean().reset_index()
         Y_chart3 = dcc.Graph(
             figure=px.bar(
@@ -169,7 +162,7 @@ def update_output_container(report_type, selected_year):
             )
         )
 
-        # Plot 4 (Total Ad Expenditure by vehicle type)
+        
         exp_data = yearly_data.groupby('Vehicle_Type')['Advertising_Expenditure'].sum().reset_index()
         Y_chart4 = dcc.Graph(
             figure=px.pie(
@@ -195,6 +188,6 @@ def update_output_container(report_type, selected_year):
 
     return html.Div("Please select a report type.")
 
-# Run the Dash app
+
 if __name__ == '__main__':
     app.run(debug=True)
